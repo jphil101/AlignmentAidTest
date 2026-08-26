@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bioinformatics DP Visualizer | Needleman-Wunsch & Smith-Waterman</title>
+  <meta name="description" content="Interactive visual educational aid for studying Dynamic Programming in Bioinformatics: Needleman-Wunsch Global Alignment and Smith-Waterman Local Alignment." />
+  
+  <!-- Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ========================================================================
+       App Header & Algorithm Mode Switcher
+       ======================================================================== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand-section">
+        <span class="brand-icon">🧬</span>
+        <div class="brand-titles">
+          <h1>Bio-DP Alignment Aid</h1>
+          <div class="brand-subtitle">Interactive Study Tool for Needleman-Wunsch & Smith-Waterman</div>
+        </div>
+      </div>
+
+      <!-- Main Switch: Needleman-Wunsch (Global) vs Smith-Waterman (Local) -->
+      <div class="algo-switcher-container" role="radiogroup" aria-label="Select Alignment Algorithm">
+        <label class="algo-switch-label" id="label-algo-nw" title="Global sequence alignment end-to-end">
+          <input type="radio" name="algorithm" id="algo-nw" value="needleman-wunsch" checked />
+          <span>🌐 Needleman-Wunsch</span>
+        </label>
+        <label class="algo-switch-label" id="label-algo-sw" title="Local sequence alignment for high scoring motifs">
+          <input type="radio" name="algorithm" id="algo-sw" value="smith-waterman" />
+          <span>🔍 Smith-Waterman</span>
+        </label>
+      </div>
+
+      <!-- Quick Preset Selector -->
+      <div class="preset-wrapper">
+        <select id="preset-select" class="form-input" aria-label="Load Pre-configured Examples" style="font-size: 0.85rem; padding: 0.45rem 0.75rem;">
+          <option value="">-- Load a Preset Example --</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       Main Application Container
+       ======================================================================== -->
+  <main class="main-container">
+
+    <!-- Active Algorithm Concept Banner -->
+    <section class="algo-info-banner">
+      <div class="algo-info-badge" id="algo-title-badge">Needleman-Wunsch (Global Alignment)</div>
+      <div class="algo-info-text" id="algo-description-text">
+        <strong>Global Alignment:</strong> Aligns sequences end-to-end. Row 0 and Column 0 are initialized with cumulative gap penalties (e.g. 0, -1, -2...). Scores can be negative. Traceback starts at the bottom-right corner <code>(M, N)</code> and travels to <code>(0,0)</code>.
+      </div>
+    </section>
+
+    <!-- Configuration & Input Section -->
+    <section class="config-card" aria-label="Sequences and Scoring Parameters">
+      <div class="config-grid">
+        
+        <!-- Sequence 1 (Rows / Vertical) -->
+        <div class="form-group">
+          <label class="form-label" for="seq1-input">
+            <span>Sequence 1 (Vertical / Rows, $i$)</span>
+            <span class="text-muted text-xs">e.g. DNA/RNA/Protein</span>
+          </label>
+          <div class="input-with-action">
+            <input type="text" id="seq1-input" class="form-input" value="GCATGCG" placeholder="e.g. GCATGCG" maxlength="20" spellcheck="false" autocomplete="off" />
+            <button id="btn-swap-seqs" class="btn btn-secondary btn-icon-only" title="Swap Sequence 1 & 2">⇄</button>
+          </div>
+          <div class="seq-preview-bar" id="seq1-badge-preview"></div>
+        </div>
+
+        <!-- Sequence 2 (Columns / Horizontal) -->
+        <div class="form-group">
+          <label class="form-label" for="seq2-input">
+            <span>Sequence 2 (Horizontal / Columns, $j$)</span>
+            <span class="text-muted text-xs">e.g. DNA/RNA/Protein</span>
+          </label>
+          <input type="text" id="seq2-input" class="form-input" value="GATTACA" placeholder="e.g. GATTACA" maxlength="20" spellcheck="false" autocomplete="off" />
+          <div class="seq-preview-bar" id="seq2-badge-preview"></div>
+        </div>
+
+        <!-- Scoring Parameters (Match, Mismatch, Gap) -->
+        <div class="form-group">
+          <label class="form-label">
+            <span>Scoring Rules (Supports + / - values)</span>
+          </label>
+          <div class="score-params-row">
+            <div class="param-item">
+              <label for="match-input" class="text-xs text-muted" style="display:block; margin-bottom:2px; font-weight:600;">Match</label>
+              <input type="number" id="match-input" class="form-input" value="1" step="1" />
+            </div>
+            <div class="param-item">
+              <label for="mismatch-input" class="text-xs text-muted" style="display:block; margin-bottom:2px; font-weight:600;">Mismatch</label>
+              <input type="number" id="mismatch-input" class="form-input" value="-1" step="1" />
+            </div>
+            <div class="param-item">
+              <label for="gap-input" class="text-xs text-muted" style="display:block; margin-bottom:2px; font-weight:600;">Gap ($d$)</label>
+              <input type="number" id="gap-input" class="form-input" value="-1" step="1" />
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Action Toolbar (Check Answers, Eraser, Hints, Zoom) -->
+    <section class="toolbar-card" aria-label="Interactive Game Controls">
+      <div class="toolbar-group">
+        <!-- 1. Check Answers Button -->
+        <button id="btn-check-answers" class="btn btn-primary" title="Validate all filled scores (correct turn green, incorrect turn red with smooth 20s fade)">
+          <span>✅</span> Check Answers
+        </button>
+
+        <!-- 2. Eraser Tool Button -->
+        <button id="btn-eraser" class="btn btn-eraser-tool" title="Toggle Eraser mode: click on arrows or cells to erase them">
+          <span>🧹</span> Eraser
+        </button>
+
+        <!-- 3. Complete this Button -->
+        <button id="btn-complete-matrix" class="btn btn-complete-tool" title="Complete the rest of the matrix once you have filled at least 5 correct cells manually">
+          <span>⚡</span> Complete this
+        </button>
+
+        <!-- 4. Hint / Auto-Solve Cell -->
+        <button id="btn-hint" class="btn btn-secondary" title="Auto-fill the next cell and show its derivation">
+          <span>💡</span> Give Hint
+        </button>
+
+        <!-- 4. Show/Hide Solution Section -->
+        <button id="btn-toggle-answer" class="btn btn-secondary" title="View the complete mathematically correct DP matrix and optimal traceback path">
+          <span>👁️</span> Show Full Solution
+        </button>
+      </div>
+
+      <div class="toolbar-group">
+        <!-- Clear Actions -->
+        <button id="btn-reset-scores" class="btn btn-secondary btn-sm" title="Clear all your entered numbers">Clear Scores</button>
+        <button id="btn-reset-arrows" class="btn btn-secondary btn-sm" title="Clear all your custom arrows">Clear Arrows</button>
+        <button id="btn-reset-all" class="btn btn-secondary btn-sm" title="Reset everything in the interactive board">Reset All</button>
+
+        <!-- Matrix Zoom Controls -->
+        <div class="zoom-controls">
+          <button id="btn-zoom-out" class="btn btn-secondary btn-sm btn-icon-only" title="Zoom Out">-</button>
+          <span class="zoom-value" id="zoom-display-value">100%</span>
+          <button id="btn-zoom-in" class="btn btn-secondary btn-sm btn-icon-only" title="Zoom In">+</button>
+          <button id="btn-zoom-reset" class="btn btn-secondary btn-sm" title="Reset Zoom" style="font-size:0.75rem;">1:1</button>
+        </div>
+
+        <!-- Export Alignment -->
+        <button id="btn-export-report" class="btn btn-secondary btn-sm" title="Copy full alignment summary report to clipboard">
+          <span>📋</span> Copy Report
+        </button>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         Interactive Practice Board & Rough Work Sidebar Layout
+         ======================================================================== -->
+    <div class="practice-board-layout">
+      
+      <!-- Left Column: Rough Work Section -->
+      <aside class="rough-work-sidebar" aria-label="Rough Work Scratchpad">
+        <div class="rough-work-card">
+          <div class="rough-work-header">
+            <div class="rough-work-title">
+              <span class="rough-work-icon">📝</span>
+              <span>Rough Work</span>
+            </div>
+            <span class="rough-cell-badge" id="rough-active-cell-badge">Select a cell</span>
+          </div>
+
+          <p class="rough-work-desc">
+            Enter your intermediate calculations here for the selected cell. Notes are cached per cell.
+          </p>
+
+          <div class="rough-inputs-list">
+            <!-- 1. Diagonal Candidate -->
+            <div class="rough-field-group">
+              <label class="rough-field-label rough-label-diag" for="sidebar-rough-diag">
+                <span>↖ Diagonal:</span>
+                <span class="rough-sublabel">NW + Match/Mismatch</span>
+              </label>
+              <input type="text" id="sidebar-rough-diag" class="form-input rough-sidebar-input" placeholder="e.g. 2 + 1 = 3" spellcheck="false" autocomplete="off" />
+            </div>
+
+            <!-- 2. Up Candidate -->
+            <div class="rough-field-group">
+              <label class="rough-field-label rough-label-up" for="sidebar-rough-up">
+                <span>↑ Up:</span>
+                <span class="rough-sublabel">North + Gap</span>
+              </label>
+              <input type="text" id="sidebar-rough-up" class="form-input rough-sidebar-input" placeholder="e.g. 0 - 2 = -2" spellcheck="false" autocomplete="off" />
+            </div>
+
+            <!-- 3. Left Candidate -->
+            <div class="rough-field-group">
+              <label class="rough-field-label rough-label-left" for="sidebar-rough-left">
+                <span>← Left:</span>
+                <span class="rough-sublabel">West + Gap</span>
+              </label>
+              <input type="text" id="sidebar-rough-left" class="form-input rough-sidebar-input" placeholder="e.g. -2 - 2 = -4" spellcheck="false" autocomplete="off" />
+            </div>
+          </div>
+
+          <div class="rough-sidebar-footer">
+            <button type="button" id="btn-clear-rough" class="btn btn-secondary btn-sm" style="width: 100%;">Clear This Cell's Notes</button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right Column: Interactive Practice Matrix -->
+      <div class="practice-matrix-column">
+        <section class="matrix-section-card" aria-label="Interactive Score Filling Board">
+          <div class="matrix-section-header">
+            <div class="matrix-section-title">
+              <span>✍️ Interactive Practice Board</span>
+            </div>
+            <div class="matrix-instructions-hint">
+              <strong>How to play:</strong> Click a cell to open its <strong>Rough Work</strong> on the left. Type numbers into cells. 
+              <strong>Hover near cell edges to place arrows</strong>. Use <strong>🧹 Eraser</strong> to remove.
+            </div>
+          </div>
+
+          <!-- Matrix Scroll Viewport -->
+          <div class="matrix-viewport">
+            <div id="interactive-matrix-container">
+              <!-- Rendered dynamically by MatrixView -->
+            </div>
+          </div>
+        </section>
+      </div>
+
+    </div>
+
+    <!-- ========================================================================
+         Hint Step-by-Step Calculation Breakdown (Opens on 'Give Hint')
+         ======================================================================== -->
+    <section id="hint-inspector-section" class="hint-inspector-section hidden" aria-label="Hint Cell Calculation Breakdown">
+      <div class="matrix-section-card hint-card">
+        <div class="matrix-section-header">
+          <div class="matrix-section-title">
+            <span>💡 Hint: Step-by-Step Calculation Breakdown</span>
+          </div>
+          <button type="button" id="btn-close-hint-inspector" class="btn btn-secondary btn-sm">✕ Close Hint</button>
+        </div>
+        <div id="hint-inspector-container">
+          <!-- Rendered dynamically when Give Hint is clicked -->
+        </div>
+      </div>
+    </section>
+
+
+
+    <!-- ========================================================================
+         Ground-Truth Solution & Traceback Visualizer (Collapsible / Toggleable)
+         ======================================================================== -->
+    <section id="answer-solution-section" class="answer-section hidden" aria-label="Complete DP Matrix Solution">
+      
+      <!-- Alignment Results Summary Card -->
+      <div id="alignment-summary-container">
+        <!-- Rendered dynamically by MatrixView -->
+      </div>
+
+      <!-- Complete Solution Matrix -->
+      <div class="matrix-section-card">
+        <div class="matrix-section-header">
+          <div class="matrix-section-title">
+            <span>🎯 Complete Ground-Truth DP Matrix & Optimal Traceback Path</span>
+          </div>
+          <div class="text-muted text-xs">
+            Glowing yellow cells indicate the optimal traceback route(s).
+          </div>
+        </div>
+
+        <div class="matrix-viewport">
+          <div id="answer-matrix-container">
+            <!-- Rendered dynamically by MatrixView -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Step-by-Step Mathematical Derivation Inspector (Visible in Solution Section) -->
+      <div class="matrix-section-card" aria-label="Cell Math Inspector">
+        <div class="matrix-section-header">
+          <div class="matrix-section-title">
+            <span>🔬 Step-by-Step Mathematical Calculation Inspector</span>
+          </div>
+          <div class="text-muted text-xs">
+            Click any cell in the solution matrix above to view its exact recurrence derivation.
+          </div>
+        </div>
+        <div id="cell-inspector-container">
+          <div class="inspector-placeholder">
+            👈 Click any cell in the solution matrix above to inspect its dynamic programming derivation step-by-step.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         Educational Theory & Algorithm Reference Accordion
+         ======================================================================== -->
+    <section class="theory-card">
+      <details>
+        <summary>📖 Dynamic Programming in Bioinformatics: Theory & Recurrence Relations (Click to Expand)</summary>
+        <div class="theory-content">
+          <div class="theory-grid">
+            
+            <div class="theory-box">
+              <h4>🌐 Needleman-Wunsch Algorithm (Global Alignment)</h4>
+              <p><strong>Goal:</strong> Finds the optimal end-to-end alignment between two complete sequences.</p>
+              <ul>
+                <li><strong>Initialization:</strong> $H(i,0) = i \times d$ and $H(0,j) = j \times d$.</li>
+                <li><strong>Recurrence:</strong>
+                  <br />$H(i,j) = \max \begin{cases} H(i-1, j-1) + s(S_1[i], S_2[j]) & \text{(Diagonal: Match/Mismatch)} \\ H(i-1, j) + d & \text{(Up: Gap in Seq 2 / Insertion)} \\ H(i, j-1) + d & \text{(Left: Gap in Seq 1 / Deletion)} \end{cases}$
+                </li>
+                <li><strong>Traceback:</strong> Begins at the bottom-right corner $H(M, N)$ and traces back arrows until reaching $(0,0)$.</li>
+              </ul>
+            </div>
+
+            <div class="theory-box">
+              <h4>🔍 Smith-Waterman Algorithm (Local Alignment)</h4>
+              <p><strong>Goal:</strong> Identifies the most highly conserved local subsequence or motif within larger sequences.</p>
+              <ul>
+                <li><strong>Initialization:</strong> $H(i,0) = 0$ and $H(0,j) = 0$ (all boundary cells are 0).</li>
+                <li><strong>Recurrence:</strong>
+                  <br />$H(i,j) = \max \begin{cases} 0 & \text{(Floor: resets negative scores)} \\ H(i-1, j-1) + s(S_1[i], S_2[j]) \\ H(i-1, j) + d \\ H(i, j-1) + d \end{cases}$
+                </li>
+                <li><strong>Traceback:</strong> Starts at the cell with the <strong>maximum score in the entire matrix</strong> $\max H(i, j)$ and stops when reaching any cell with a score of $0$.</li>
+              </ul>
+            </div>
+
+          </div>
+
+          <div class="theory-box" style="margin-top: 0.5rem;">
+            <h4>💡 Biological Scoring Conventions:</h4>
+            <p>
+              - <strong>Match:</strong> Positive reward (e.g. $+1$ or $+2$) for conserved nucleotides/amino acids.<br />
+              - <strong>Mismatch:</strong> Negative penalty (e.g. $-1$) representing evolutionary point mutations / substitutions.<br />
+              - <strong>Gap Penalty ($d$):</strong> Negative penalty (e.g. $-2$) representing insertions or deletions (indels).
+            </p>
+          </div>
+        </div>
+      </details>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================
+       Toast Notifications Container
+       ======================================================================== -->
+  <div id="toast-notification" class="toast-notification" role="status" aria-live="polite"></div>
+
+  <!-- App Footer -->
+  <footer class="app-footer">
+    <div>Designed for bioinformatics students and educators • Fully client-side &amp; Vercel-ready</div>
+  </footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

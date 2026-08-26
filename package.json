@@ -1,0 +1,20 @@
+{
+  "name": "bio-dp-alignment-aid",
+  "version": "1.0.0",
+  "description": "Interactive Bioinformatics Dynamic Programming Alignment Visualizer for Needleman-Wunsch and Smith-Waterman",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 3000",
+    "serve": "python3 -m http.server 3000"
+  },
+  "keywords": [
+    "bioinformatics",
+    "dynamic-programming",
+    "needleman-wunsch",
+    "smith-waterman",
+    "sequence-alignment",
+    "education"
+  ],
+  "author": "Bioinformatics AI Assistant",
+  "license": "MIT"
+}

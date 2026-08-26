@@ -59,11 +59,11 @@ class DynamicProgrammingApp {
     this.btnExportReport = document.getElementById('btn-export-report');
     this.toastNotification = document.getElementById('toast-notification');
 
-    // Modal elements
-    this.modalOverlay = document.getElementById('confirm-modal-overlay');
-    this.modalMessage = document.getElementById('modal-message');
-    this.btnModalCancel = document.getElementById('btn-modal-cancel');
-    this.btnModalConfirm = document.getElementById('btn-modal-confirm');
+    // Complete this Confirmation Popover elements (anchored below button)
+    this.completePopover = document.getElementById('complete-confirm-popover');
+    this.completeConfirmText = document.getElementById('complete-confirm-text');
+    this.btnPopoverCancel = document.getElementById('btn-popover-cancel');
+    this.btnPopoverConfirm = document.getElementById('btn-popover-confirm');
 
     // Containers
     this.interactiveMatrixContainer = document.getElementById('interactive-matrix-container');
@@ -172,26 +172,36 @@ class DynamicProgrammingApp {
       this.btnCompleteMatrix.addEventListener('click', () => this.handleCompleteThis());
     }
 
-    // Confirmation Modal Actions
-    if (this.btnModalCancel) {
-      this.btnModalCancel.addEventListener('click', () => this.closeConfirmModal());
+    // Complete this Confirmation Popover Actions
+    if (this.btnPopoverCancel) {
+      this.btnPopoverCancel.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.closeConfirmModal();
+      });
     }
 
-    if (this.btnModalConfirm) {
-      this.btnModalConfirm.addEventListener('click', () => {
+    if (this.btnPopoverConfirm) {
+      this.btnPopoverConfirm.addEventListener('click', (e) => {
+        e.stopPropagation();
         this.closeConfirmModal();
         this.matrixView.completeRemainingMatrix();
         this.showToast('🎉 Matrix completed with accurate scores and arrows!', 'success');
       });
     }
 
-    if (this.modalOverlay) {
-      this.modalOverlay.addEventListener('click', (e) => {
-        if (e.target === this.modalOverlay) {
-          this.closeConfirmModal();
-        }
-      });
-    }
+    // Dismiss popover on outside click
+    document.addEventListener('pointerdown', (e) => {
+      if (!this.completePopover || this.completePopover.classList.contains('hidden')) return;
+      if (this.completePopover.contains(e.target) || (this.btnCompleteMatrix && this.btnCompleteMatrix.contains(e.target))) return;
+      this.closeConfirmModal();
+    });
+
+    // Dismiss popover on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        this.closeConfirmModal();
+      }
+    });
 
     if (this.btnEraser) {
       this.btnEraser.addEventListener('click', () => this.toggleEraserMode());
@@ -351,19 +361,19 @@ class DynamicProgrammingApp {
   }
 
   openConfirmModal(stats) {
-    if (!this.modalOverlay) return;
-    if (this.modalMessage) {
-      this.modalMessage.innerHTML = `
+    if (!this.completePopover) return;
+    if (this.completeConfirmText) {
+      this.completeConfirmText.innerHTML = `
         You have manually solved <strong>${stats.correctCount}</strong> cells correctly! (Remaining: ${stats.missingCount + stats.incorrectCount} cells).<br/><br/>
-        Would you like to automatically complete the remaining matrix with accurate scores and arrows?
+        Would you like to auto-complete the remaining matrix with accurate scores and arrows?
       `;
     }
-    this.modalOverlay.classList.remove('hidden');
+    this.completePopover.classList.remove('hidden');
   }
 
   closeConfirmModal() {
-    if (this.modalOverlay) {
-      this.modalOverlay.classList.add('hidden');
+    if (this.completePopover) {
+      this.completePopover.classList.add('hidden');
     }
   }
 

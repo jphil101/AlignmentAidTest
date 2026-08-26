@@ -127,10 +127,27 @@
           <span>🧹</span> Eraser
         </button>
 
-        <!-- 3. Complete this Button -->
-        <button id="btn-complete-matrix" class="btn btn-complete-tool" title="Complete the rest of the matrix once you have filled at least 5 correct cells manually">
-          <span>⚡</span> Complete this
-        </button>
+        <!-- 3. Complete this Button with attached Confirmation Popover -->
+        <div class="complete-btn-wrapper">
+          <button id="btn-complete-matrix" class="btn btn-complete-tool" title="Complete the rest of the matrix once you have filled at least 5 correct cells manually">
+            <span>⚡</span> Complete this
+          </button>
+
+          <!-- Inline Confirmation Popover Right Below Button -->
+          <div id="complete-confirm-popover" class="complete-confirm-popover hidden" role="dialog" aria-label="Confirm Auto-Complete">
+            <div class="confirm-popover-header">
+              <span class="confirm-popover-badge">⚡</span>
+              <strong>Auto-Complete Matrix?</strong>
+            </div>
+            <div class="confirm-popover-body" id="complete-confirm-text">
+              You have manually solved 5 cells correctly. Complete the remaining matrix?
+            </div>
+            <div class="confirm-popover-actions">
+              <button type="button" id="btn-popover-cancel" class="btn btn-secondary btn-sm">Cancel</button>
+              <button type="button" id="btn-popover-confirm" class="btn btn-primary btn-sm btn-modal-yes">Yes, Complete</button>
+            </div>
+          </div>
+        </div>
 
         <!-- 4. Hint / Auto-Solve Cell -->
         <button id="btn-hint" class="btn btn-secondary" title="Auto-fill the next cell and show its derivation">

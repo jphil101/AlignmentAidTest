@@ -1654,3 +1654,80 @@ th.header-idx {
   border: 1.5px solid #f59e0b;
   background: #fffbeb;
 }
+
+/* ==========================================================================
+   Complete This - Inline Confirmation Popover
+   ========================================================================== */
+.complete-btn-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.complete-confirm-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 1200;
+  width: 320px;
+  background: #ffffff;
+  border: 1.5px solid #7c3aed;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 16px 36px -4px rgba(124, 58, 237, 0.22), 0 8px 16px -2px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  font-family: var(--font-sans);
+  animation: completePopoverPop 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes completePopoverPop {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.confirm-popover-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #5b21b6;
+  border-bottom: 1px solid #ede9fe;
+  padding-bottom: 0.4rem;
+}
+
+.confirm-popover-badge {
+  width: 26px;
+  height: 26px;
+  background: #ede9fe;
+  color: #7c3aed;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.confirm-popover-body {
+  font-size: 0.86rem;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.confirm-popover-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.2rem;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 0.5rem;
+}

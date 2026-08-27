@@ -61,7 +61,10 @@
   <!-- ========================================================================
        Visitor Analytics (Both Vercel & Cloudflare are 100% compatible & cookieless)
        ======================================================================== -->
-  <!-- 1. Vercel Web Analytics -->
+  <!-- 1. Vercel Web Analytics (Official Plain HTML / Static Setup) -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
   <script defer src="/_vercel/insights/script.js"></script>
 
   <!-- 2. Cloudflare Web Analytics (Paste your Cloudflare beacon token here if using Cloudflare) -->

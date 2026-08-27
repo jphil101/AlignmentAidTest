@@ -1,0 +1,5 @@
+# Robots.txt for Bioinformatics Dynamic Programming Visualizer
+User-agent: *
+Allow: /
+
+Sitemap: https://alignment-aid-test.vercel.app/sitemap.xml

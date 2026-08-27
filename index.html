@@ -3,9 +3,53 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bioinformatics DP Visualizer | Needleman-Wunsch & Smith-Waterman</title>
-  <meta name="description" content="Interactive visual educational aid for studying Dynamic Programming in Bioinformatics: Needleman-Wunsch Global Alignment and Smith-Waterman Local Alignment." />
+  <title>Bioinformatics Sequence Alignment Visualizer | Needleman-Wunsch & Smith-Waterman DP Aid</title>
   
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Interactive educational tool for studying Dynamic Programming in bioinformatics. Practice Needleman-Wunsch (Global) and Smith-Waterman (Local) sequence alignment step-by-step with interactive matrix score filling, rough work scratchpad, arrow backpointers, and traceback path visualizer." />
+  <meta name="keywords" content="Needleman-Wunsch, Smith-Waterman, Dynamic Programming, Bioinformatics, Sequence Alignment, Pairwise Alignment, Global Alignment, Local Alignment, Scoring Matrix, Traceback Path, Computational Biology Practice Tool, Bioinformatics Algorithms" />
+  <meta name="author" content="Jeril Philip" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="theme-color" content="#2563eb" />
+  <link rel="canonical" href="https://alignment-aid-test.vercel.app/" />
+
+  <!-- Favicon (DNA SVG Icon) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧬</text></svg>" />
+
+  <!-- Open Graph / Facebook / LinkedIn / WhatsApp -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Bio-DP Alignment Aid" />
+  <meta property="og:title" content="Bioinformatics Sequence Alignment Visualizer | Needleman-Wunsch & Smith-Waterman" />
+  <meta property="og:description" content="Interactive learning and practice tool for Needleman-Wunsch Global and Smith-Waterman Local sequence alignment algorithms in Dynamic Programming." />
+  <meta property="og:url" content="https://alignment-aid-test.vercel.app/" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Bioinformatics DP Sequence Alignment Visualizer" />
+  <meta name="twitter:description" content="Interactive study tool for Needleman-Wunsch Global and Smith-Waterman Local Sequence Alignment algorithms with step-by-step matrix practice." />
+
+  <!-- Structured Data: JSON-LD for Google Rich Snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Bio-DP Alignment Aid - Needleman-Wunsch & Smith-Waterman Visualizer",
+    "url": "https://alignment-aid-test.vercel.app/",
+    "description": "Interactive visual educational tool for mastering Dynamic Programming sequence alignment in bioinformatics.",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "All modern web browsers",
+    "educationalLevel": ["Undergraduate", "Postgraduate", "High School", "Bioinformatics Exam Prep"],
+    "learningResourceType": ["Interactive Tool", "Simulation", "Assessment"],
+    "teaches": "Needleman-Wunsch Algorithm, Smith-Waterman Algorithm, Dynamic Programming, Sequence Alignment, Traceback",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
   <!-- Modern Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,6 +57,16 @@
   
   <!-- Stylesheet -->
   <link rel="stylesheet" href="styles.css" />
+
+  <!-- ========================================================================
+       Visitor Analytics (Both Vercel & Cloudflare are 100% compatible & cookieless)
+       ======================================================================== -->
+  <!-- 1. Vercel Web Analytics -->
+  <script defer src="/_vercel/insights/script.js"></script>
+
+  <!-- 2. Cloudflare Web Analytics (Paste your Cloudflare beacon token here if using Cloudflare) -->
+  <!-- To activate: Get your token from Cloudflare Dashboard -> Web Analytics -> Manage Site -> JS Snippet -->
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "YOUR_CLOUDFLARE_BEACON_TOKEN"}'></script>
 </head>
 <body>
 

@@ -1749,3 +1749,53 @@ th.header-idx {
   border-top: 1px solid #f1f5f9;
   padding-top: 0.5rem;
 }
+
+/* ==========================================================================
+   Guided Tutorial Tour (js/tutorial.js)
+   ========================================================================== */
+.tour-root { position: fixed; inset: 0; z-index: 5000; pointer-events: none; display: none; }
+.tour-root.tour-open { display: block; }
+.tour-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55); opacity: 0; transition: opacity .2s; }
+.tour-root.tour-centered .tour-backdrop { opacity: 1; pointer-events: auto; }
+.tour-spotlight {
+  position: fixed; border-radius: 12px; pointer-events: none;
+  box-shadow: 0 0 0 3px #3b82f6, 0 0 0 9999px rgba(15, 23, 42, 0.55);
+  transition: left .25s ease, top .25s ease, width .25s ease, height .25s ease;
+}
+.tour-spotlight.tour-spot-none { box-shadow: none; width: 0 !important; height: 0 !important; }
+.tour-card {
+  position: fixed; pointer-events: auto; width: min(400px, calc(100vw - 24px));
+  background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 14px;
+  box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.35); padding: 1rem 1.1rem 0.9rem;
+  font-family: var(--font-sans); animation: tourPop .18s ease-out;
+}
+.tour-root.tour-centered .tour-card { left: 50% !important; top: 50% !important; transform: translate(-50%, -50%); width: min(480px, calc(100vw - 24px)); }
+@keyframes tourPop { from { opacity: 0; } to { opacity: 1; } }
+.tour-close { position: absolute; top: 8px; right: 10px; border: 0; background: transparent; font-size: 1rem; color: #64748b; cursor: pointer; padding: 4px 6px; border-radius: 6px; }
+.tour-close:hover { background: #f1f5f9; color: #0f172a; }
+.tour-progress { font-size: 0.72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #2563eb; margin-bottom: .25rem; }
+.tour-title { font-size: 1.05rem; font-weight: 700; margin: 0 1.5rem .4rem 0; line-height: 1.3; }
+.tour-body { font-size: 0.88rem; line-height: 1.55; color: #334155; }
+.tour-body p + p, .tour-body p + ul, .tour-body ul + p { margin-top: .45rem; }
+.tour-body ul { padding-left: 1.1rem; }
+.tour-body li { margin: .15rem 0; }
+.tour-body kbd { font-family: var(--font-mono); font-size: .78rem; background: #f1f5f9; border: 1px solid #cbd5e1; border-bottom-width: 2px; border-radius: 4px; padding: 0 .3rem; }
+.tour-body code { font-family: var(--font-mono); font-size: .8rem; background: #eff6ff; color: #1e40af; padding: 0 .25rem; border-radius: 4px; }
+.tour-dots { display: flex; gap: 4px; flex-wrap: wrap; margin: .75rem 0 .6rem; }
+.tour-dot { width: 7px; height: 7px; border-radius: 50%; background: #e2e8f0; }
+.tour-dot.is-done { background: #93c5fd; }
+.tour-dot.is-current { background: #2563eb; width: 18px; border-radius: 4px; }
+.tour-actions { display: flex; align-items: center; gap: .45rem; }
+.tour-spacer { flex: 1; }
+.tour-btn { font: inherit; font-size: .84rem; font-weight: 600; padding: .45rem .85rem; border-radius: 8px; cursor: pointer; border: 1px solid transparent; }
+.tour-btn-primary { background: #2563eb; color: #fff; }
+.tour-btn-primary:hover { background: #1d4ed8; }
+.tour-btn-secondary { background: #fff; color: #0f172a; border-color: #cbd5e1; }
+.tour-btn-secondary:hover { background: #f1f5f9; }
+.tour-btn-ghost { background: transparent; color: #64748b; padding-left: .2rem; padding-right: .2rem; text-decoration: underline; text-underline-offset: 3px; }
+.tour-btn-ghost:hover { color: #0f172a; }
+.tour-btn:focus-visible, .tour-close:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+.tour-card { max-height: calc(100vh - 16px); max-height: calc(100dvh - 16px); overflow-y: auto; overscroll-behavior: contain; }
+@media (max-width: 640px) { .tour-body { font-size: 0.84rem; } .tour-card { padding: 0.85rem 0.9rem 0.75rem; } }
+.btn-tutorial { white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .tour-spotlight, .tour-card { transition: none; animation: none; } }

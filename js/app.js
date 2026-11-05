@@ -6,6 +6,7 @@ import { computeAlignmentMatrix, ALGORITHM } from './algorithms.js';
 import { PRESETS } from './presets.js';
 import { MatrixView } from './matrix-view.js';
 import { createCharBadgeHTML } from './color-map.js';
+import { initTutorial } from './tutorial-steps.js';
 
 class DynamicProgrammingApp {
   constructor() {
@@ -493,4 +494,5 @@ class DynamicProgrammingApp {
 // Initialize on DOM load
 window.addEventListener('DOMContentLoaded', () => {
   window.dpApp = new DynamicProgrammingApp();
+  window.dpTutorial = initTutorial();
 });

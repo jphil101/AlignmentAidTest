@@ -51,7 +51,13 @@ An interactive, responsive web application designed for students, educators, and
    - Clicking **"Give Hint"** fills the next cell and reveals a dedicated step-by-step mathematical breakdown card showing the exact calculations ($\text{Diagonal}$, $\text{Up}$, $\text{Left}$, and winning max).
    - Can be closed with the "✕ Close Hint" button.
 
-9. **Full Solution & Traceback Visualizer**:
+9. **Guided Tutorial (❓, skippable)**:
+   - A 15-step spotlight tour opens automatically on a visitor's **first visit** and walks through every control (algorithm switch, presets, inputs, filling cells, drawing arrows, rough work, checking, eraser, hints, auto-complete, solution, export, theory).
+   - **Skip** at any time (Skip button, ✕ or `Esc`); it won't auto-open again. Replay any time with the **❓ Tutorial** button in the header.
+   - Keyboard: `←` / `→` to move between steps. Works on phones (card docks to the top/bottom of the screen).
+   - Code: `js/tutorial.js` (reusable tour engine) + `js/tutorial-steps.js` (the steps).
+
+10. **Full Solution & Traceback Visualizer**:
    - Click **"Show Full Solution"** to reveal the complete answer matrix, glowing golden traceback trail, and formatted alignment strings (`Seq1`, match line `|`, `Seq2`), total score, identity %, match/mismatch/gap statistics.
 
 ---

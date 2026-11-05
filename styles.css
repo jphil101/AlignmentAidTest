@@ -1272,6 +1272,15 @@ th.header-idx {
   .toolbar-group {
     justify-content: center;
   }
+  /* Stack the algorithm badge above its description; side by side, the nowrap badge
+     squeezed the text into a sliver that ran off-screen */
+  .algo-info-banner {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .algo-info-badge {
+    white-space: normal;
+  }
   :root {
     --cell-size: 56px;
   }
@@ -1538,7 +1547,16 @@ th.header-idx {
 
 @media (max-width: 960px) {
   .practice-board-layout {
-    grid-template-columns: 1fr;
+    /* minmax(0, 1fr): a plain 1fr track grows to the matrix's min-content width and
+       makes the whole page scroll sideways on phones; the matrix scrolls in its own viewport instead */
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .practice-matrix-column,
+  .rough-work-sidebar {
+    min-width: 0;
+  }
+  .rough-work-card {
+    position: static;
   }
 }
 
